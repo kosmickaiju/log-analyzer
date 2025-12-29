@@ -1,6 +1,15 @@
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import re
+import json
+
+def load_config():
+    with open("config.json") as f:
+        return json.load(f)
+
+config = load_config()
+permitted_ips = config["permitted_ips"]
+
 def pick_file():
     Tk().withdraw()
     filename = askopenfilename(
@@ -11,8 +20,8 @@ def pick_file():
         print("No file selected.")
         exit()
     return filename
+
 def analyze_log(filename):
-    permitted_ips = []
     print(f"Analyzing: {filename}")
     with open(filename, "r") as f:
         for line in f:
@@ -24,8 +33,10 @@ def analyze_log(filename):
             '''Example: detect failed SSH login attempts
             if "Failed password" in line:
                 print("FAILED LOGIN >", line.strip())'''
+            
 def main():
     log_file = pick_file()
     analyze_log(log_file)
+
 if __name__ == "__main__":
     main()
